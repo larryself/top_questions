@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { questionApi } from './question';
-import { IQuestion } from '../components/types/question';
+import { IQuestion } from '../types/question';
 
 type Props = {
   date: string,
