@@ -1,6 +1,9 @@
 import React, { MouseEvent, useEffect, useRef, useState } from 'react';
-import { Container, Detail, Box, Title, Score, Button } from './style';
-import { useAction } from '../../store/useActions';
+import { Container, Detail, Box, Title, Score, Button, Author, Img, IconInner } from './style';
+import { useAction } from 'store';
+import { useDrag, useDrop } from 'react-dnd';
+import { Tags, Plus, Minus } from 'components';
+import { Approved } from '../icon';
 
 interface Props {
   score: number
@@ -8,16 +11,68 @@ interface Props {
   owner: {
     display_name: string
     reputation: number
+    profile_image: string
   },
   view_count: number
   is_answered: boolean
   question_id: number
+  index: number
+  tags: string[]
+  moveCard: (dragIndex: number, dropIndex: number) => void
+  dbClick: ({id, index}: { id: number, index: number }) => void
+  isChose: { id: number, index: number }[]
 }
 
-export const Question = ({score, title, owner, view_count, is_answered, question_id}: Props) => {
+interface DragItem {
+  question_id: number;
+  index: number;
+}
+
+export const Question = React.memo(({
+                                      score,
+                                      title,
+                                      owner,
+                                      view_count,
+                                      is_answered,
+                                      question_id,
+                                      index,
+                                      moveCard,
+                                      tags,
+                                      dbClick,
+                                      isChose,
+                                    }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const {setScore} = useAction();
+  const isActiveChoose = isChose.some((item) => item.id === question_id);
+  const [, drop] = useDrop({
+    accept: 'question',
+    collect: (monitor) => {
+      return {
+        handlerId: monitor.getHandlerId(),
+      };
+    },
+    hover: (item: DragItem) => {
+      if (!ref.current) {
+        return;
+      }
+      const dragIndex = item.index;
+      const dropIndex = index;
+      if (dragIndex === dropIndex) {
+        return;
+      }
+      moveCard(dragIndex, dropIndex);
+      item.index = dropIndex;
+    },
+  });
+  const [, drag] = useDrag({
+    type: 'question',
+    item: {question_id, index},
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
   let prevent = false;
 
   const increment = (e: MouseEvent<HTMLButtonElement>) => {
@@ -33,7 +88,7 @@ export const Question = ({score, title, owner, view_count, is_answered, question
   };
   const doubleClick = () => {
     prevent = true;
-    console.log('boudle');
+    dbClick({id: question_id, index});
   };
   const handleClick = (e: MouseEvent) => {
     const timer = setTimeout(() => {
@@ -47,35 +102,48 @@ export const Question = ({score, title, owner, view_count, is_answered, question
       doubleClick();
     }
   };
-
-  const handler = (e: MouseEvent) => {
-    if (isOpen && ref.current && !ref.current.contains(e.target as Node)) {
+  const handleClickOutside = (e: Event) => {
+    if (!isActiveChoose && ref.current && !ref.current.contains(e.target as Node)) {
       setIsOpen(false);
     }
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handler);
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
     return () => {
-      document.removeEventListener('mousedown', handler);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen]);
-
+  drag(drop(ref));
   return (
-    <Container ref={ref} onClick={handleClick}>
-      <Box isAnswered={is_answered}>
+    <Container ref={ref} isActiveChoose={isActiveChoose}>
+      <Box isAnswered={is_answered} onClick={handleClick} isActiveChoose={isActiveChoose}>
+        {is_answered ? (
+          <IconInner>
+            <Approved/>
+          </IconInner>) : null}
         <Title title={title}>{title}</Title>
         <Score>
           <p>{score}</p>
-          <Button type={'button'} onClick={increment}>+</Button>
-          <Button type={'button'} onClick={decrement}>-</Button>
+          <Button type={'button'} onClick={increment}>
+            <Plus/>
+          </Button>
+          <Button type={'button'} onClick={decrement}>
+            <Minus/>
+          </Button>
         </Score>
       </Box>
       <Detail isOpen={isOpen}>
-        <p>Имя автора вопроса: <span>{owner.display_name}</span></p>
+        <Author>
+          <p>Автор: <span>{owner.display_name}</span></p>
+          <Img src={owner.profile_image} alt={owner.display_name} width={50} height={50}/>
+        </Author>
         <p>Рейтинг автора: <span>{owner.reputation}</span></p>
         <p>Количество просмотров: <span>{view_count}</span></p>
+        <Tags tags={tags}/>
       </Detail>
     </Container>
   );
-};
+});
