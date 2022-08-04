@@ -1,31 +1,75 @@
-import React from 'react';
-import { Title, Header, List } from './style';
-import { Wrapper } from '../wrapper/wrapper';
-import { questionApi, useGetQuestionQuery } from '../../store/question';
-import DatePicker from 'react-datepicker';
-import { useStore } from '../../store/useAppSelector';
-import { Question } from '../question/question';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Title, Container, List } from './style';
+import { Wrapper, DateControl, Question, Error } from 'components';
+import { useStore,useAction,useGetQuestionQuery } from 'store';
+import { useSearchParams } from 'react-router-dom';
 
 export const IndexPage = () => {
   const {date, questions} = useStore();
-  const response = useGetQuestionQuery(date)
-  console.log(questions[0]?.score)
+  const ref = useRef<HTMLUListElement>(null);
+  const [searchParams] = useSearchParams();
+  const dateInQuery = Number(searchParams.get('date'));
+  const response = useGetQuestionQuery(dateInQuery || date);
+  const {setQuestions} = useAction();
+  const [isChose, setIsChose] = useState<{ id: number, index: number}[]>([]);
+  const dbClick = ({id, index}: {id: number, index: number}) => {
+    const find = isChose.find((item) => item.id === id);
+    if (find) {
+      setIsChose([])
+    } else {
+      setIsChose((prev) => [...prev, {id, index}]);
+    }
+  };
+  const handleClick = (e: MouseEvent) => {
+    if (ref.current && !ref.current.contains(e.target as Node)) {
+      setIsChose([]);
+    }
+  }
+  const moveCard = useCallback((dragIndex: number, dropIndex: number) => {
+    setQuestions({dragIndex, dropIndex});
+  }, []);
+
+  useEffect(() => {
+    if (isChose.length === 1) {
+      document.addEventListener('dblclick',handleClick);
+    }
+    return () => {
+      document.removeEventListener('dblclick', handleClick);
+    };
+  }, [isChose]);
+
+  useEffect(()=> {
+    if (isChose.length === 2) {
+      setQuestions({dragIndex: isChose[0].index, dropIndex: isChose[1].index});
+      setIsChose([])
+    }
+  },[isChose])
   return (
-    <Wrapper>
-      <Header>
-        <Title>
-          5 самых популярных вопросов на <em>StackOverFlow</em>, содержащих <q>react-redux</q> в наименовании, начиная с
-        </Title>
-      </Header>
+    <>
+      <header>
+        <Wrapper>
+          <Container>
+            <Title>
+              5 самых популярных вопросов на <em>StackOverFlow</em>, содержащих <q>react-redux</q> в наименовании,
+              начиная с
+            </Title>
+            <DateControl date={dateInQuery || date}/>
+          </Container>
+        </Wrapper>
+      </header>
       <main>
-        <List>
-        {questions.map((question) => (
-          <li key={question.question_id}>
-            <Question {...question}/>
-          </li>
-        ))}
-        </List>
+        <Wrapper>
+          {!response.error && (
+            <List ref={ref}>
+            {questions.map((question, index) => (
+              <li key={question.question_id}>
+                <Question {...question} index={index} moveCard={moveCard} dbClick={dbClick} isChose={isChose}/>
+              </li>
+            ))}
+          </List>)}
+          {response.error && <Error/>}
+        </Wrapper>
       </main>
-    </Wrapper>
+    </>
   );
 };

@@ -6,14 +6,17 @@ export const Title = styled.h1`
   text-align: center;
 `;
 
-export const Header = styled.header`
+export const Container = styled.div`
   display: flex;
+  align-items: center;
   justify-content: center;
+  flex-direction: column;
+  gap: 10px;
   padding: 20px 0;
 `;
 
 export const List = styled.ul`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
 `;
