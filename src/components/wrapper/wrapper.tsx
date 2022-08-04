@@ -10,4 +10,3 @@ export const Wrapper: FC<Props> = ({children}) => (
     {children}
   </Container>
 );
-
