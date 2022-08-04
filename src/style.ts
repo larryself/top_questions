@@ -8,6 +8,9 @@ export const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
   }
+  html, body {
+    height: 100%;
+  }
   
   html {
     font-size: 10px;
@@ -19,6 +22,11 @@ export const GlobalStyle = createGlobalStyle`
     background-color: ${COLORS.DARK_BLUE};
   }
 
+  #root {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
   a {
     color: inherit;
     text-decoration: none;
@@ -34,6 +42,7 @@ export const GlobalStyle = createGlobalStyle`
   a,
   button {
     cursor: pointer;
+    transition: .5s;
   }
   
   ul {
