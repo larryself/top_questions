@@ -1,5 +1,5 @@
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
-import { TypeRootState } from '../store/store';
+import { TypeRootState } from 'store';
 import { createSelector } from '@reduxjs/toolkit';
 
 export const useAppSelector: TypedUseSelectorHook<TypeRootState> = useSelector;
@@ -10,4 +10,3 @@ export const useStore = () => {
   const store = useAppSelector(selector);
   return store;
 }
-

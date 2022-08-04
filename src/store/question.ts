@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const questionApi = createApi({
   reducerPath: 'questionApi',
@@ -6,7 +6,7 @@ export const questionApi = createApi({
   endpoints: (builder) => ({
     getQuestion: builder.query({
       query: (date) => ({
-        url: `questions?fromdate=${date}&pagesize=5&order=desc&sort=votes&tagged=react-redux&site=stackoverflow`
+        url: `search?pagesize=5&fromdate=${date}&order=desc&sort=votes&intitle=react-redux&site=stackoverflow`
       }),
     }),
   }),

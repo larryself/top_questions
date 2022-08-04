@@ -1,6 +1,5 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { questionApi } from './question';
-import { reducer } from './rootSlice';
+import { questionApi, reducer } from 'store';
 
 const rootReducer = combineReducers({
   root: reducer,

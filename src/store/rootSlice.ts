@@ -1,14 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { questionApi } from './question';
+import { questionApi } from 'store';
 import { IQuestion } from '../types/question';
 
 type Props = {
-  date: string,
+  date: number,
   questions: IQuestion[],
 }
 
 const initialState: Props = {
-  date: '2018-01-01',
+  date: 1514764800, // it is '2018-01-01' in unix
   questions: [],
 };
 
@@ -21,10 +21,9 @@ export const rootSlice = createSlice({
     },
     setQuestions: (state, {payload}) => {
       const arr = [...state.questions];
-      const value = arr[payload.hover];
-      arr[payload.hover] = arr[payload.drag];
-      arr[payload.drag] = value;
-      console.log('prev', arr, arr);
+      const value = arr[payload.dropIndex];
+      arr[payload.dropIndex] = arr[payload.dragIndex];
+      arr[payload.dragIndex] = value;
       state.questions = arr;
     },
     setScore: (state, {payload}) => {
