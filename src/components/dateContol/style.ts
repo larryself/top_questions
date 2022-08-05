@@ -77,8 +77,4 @@ export const DatePickerStyles = createGlobalStyle`
     gap: 10px;
     flex-direction: column;
   }
-  
-  .react-datepicker__tab-loop {
-  margin-top: -10px;
-  }
 `;
