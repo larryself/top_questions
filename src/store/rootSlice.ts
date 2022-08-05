@@ -3,12 +3,12 @@ import { questionApi } from 'store';
 import { IQuestion } from '../types/question';
 
 type Props = {
-  date: number,
+  initialDate: number,
   questions: IQuestion[],
 }
 
 const initialState: Props = {
-  date: 1514764800, // it is '2018-01-01' in unix
+  initialDate: 1514764800, // it is '2018-01-01' in unix
   questions: [],
 };
 
@@ -17,7 +17,6 @@ export const rootSlice = createSlice({
   initialState,
   reducers: {
     setDate: (state, {payload}) => {
-      state.date = payload;
     },
     setQuestions: (state, {payload}) => {
       const arr = [...state.questions];

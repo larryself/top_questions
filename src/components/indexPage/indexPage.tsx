@@ -5,11 +5,12 @@ import { useStore,useAction,useGetQuestionQuery } from 'store';
 import { useSearchParams } from 'react-router-dom';
 
 export const IndexPage = () => {
-  const {date, questions} = useStore();
+  const {initialDate, questions} = useStore();
   const ref = useRef<HTMLUListElement>(null);
   const [searchParams] = useSearchParams();
   const dateInQuery = Number(searchParams.get('date'));
-  const response = useGetQuestionQuery(dateInQuery || date);
+  const date = dateInQuery || initialDate
+  const response = useGetQuestionQuery(date);
   const {setQuestions} = useAction();
   const [isChose, setIsChose] = useState<{ id: number, index: number}[]>([]);
   const dbClick = ({id, index}: {id: number, index: number}) => {
@@ -53,7 +54,7 @@ export const IndexPage = () => {
               5 самых популярных вопросов на <em>StackOverFlow</em>, содержащих <q>react-redux</q> в наименовании,
               начиная с
             </Title>
-            <DateControl date={dateInQuery || date}/>
+            <DateControl date={date}/>
           </Container>
         </Wrapper>
       </header>

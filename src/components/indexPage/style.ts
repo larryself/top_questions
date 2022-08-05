@@ -2,8 +2,8 @@ import styled from 'styled-components';
 
 export const Title = styled.h1`
   font-weight: 500;
-  max-width: 80%;
   text-align: center;
+  margin-bottom: 10px;
 `;
 
 export const Container = styled.div`
@@ -11,7 +11,6 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: 10px;
   padding: 20px 0;
 `;
 

@@ -4,20 +4,10 @@ import { useAction } from 'store';
 import { useDrag, useDrop } from 'react-dnd';
 import { Tags, Plus, Minus } from 'components';
 import { Approved } from '../icon';
+import { IQuestion } from '../../types/question';
 
-interface Props {
-  score: number
-  title: string
-  owner: {
-    display_name: string
-    reputation: number
-    profile_image: string
-  },
-  view_count: number
-  is_answered: boolean
-  question_id: number
+interface Props  extends IQuestion{
   index: number
-  tags: string[]
   moveCard: (dragIndex: number, dropIndex: number) => void
   dbClick: ({id, index}: { id: number, index: number }) => void
   isChose: { id: number, index: number }[]
