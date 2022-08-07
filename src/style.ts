@@ -36,22 +36,23 @@ export const GlobalStyle = createGlobalStyle`
     flex-direction: column;
     height: 100%;
   }
+  
   a {
     color: inherit;
     text-decoration: none;
-    transition: .5s;
+    transition: .25s;
   }
   
   button {
     font: inherit;
     border: 0;
     background-color: transparent;
+    transition: .25s;
   }
 
   a,
   button {
     cursor: pointer;
-    transition: .5s;
   }
   
   ul {

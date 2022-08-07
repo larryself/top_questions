@@ -12,7 +12,6 @@ const dateFormat = "dd.MM.yyyy";
 const parseDateFromQueryString = (date: string | null): Date | null => {
 	if (!date) return null;
 	const parsed = parseDate(date, dateFormat, new Date());
-	console.log(isValidDate(parsed));
 	return isValidDate(parsed) ? parsed : null;
 };
 

@@ -93,3 +93,11 @@ export const Inner = styled.div`
 	padding: 10px 15px;
 	height: 100%;
 `;
+
+export const Link = styled.a`
+	color: ${COLORS.DARK_BLUE};
+	&:hover {
+		opacity: 0.7;
+		text-decoration-line: underline;
+	}
+`;

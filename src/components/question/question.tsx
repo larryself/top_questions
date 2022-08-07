@@ -10,6 +10,7 @@ import {
 	Img,
 	IconInner,
 	Inner,
+	Link,
 } from "./style";
 import { useAction } from "store";
 import { useDrag, useDrop } from "react-dnd";
@@ -151,6 +152,16 @@ export const Question = React.memo(
 								Количество просмотров: <span>{view_count}</span>
 							</p>
 							<Tags tags={tags} />
+							<div>
+								<Link
+									href={question.link}
+									target={"_blank"}
+									rel="noreferrer"
+									onClick={(e) => e.stopPropagation()}
+								>
+									Перейти на сайт
+								</Link>
+							</div>
 						</Inner>
 					</Detail>
 				</Container>

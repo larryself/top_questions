@@ -11,4 +11,5 @@ export type StackOverFlowQuestion = {
 	is_answered: boolean;
 	question_id: number;
 	tags: string[];
+	link: string;
 };
