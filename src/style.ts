@@ -1,5 +1,5 @@
-import { createGlobalStyle } from 'styled-components';
-import {COLORS} from 'constants/colors';
+import { createGlobalStyle } from "styled-components";
+import { COLORS } from "constants/colors";
 
 export const GlobalStyle = createGlobalStyle`
   
@@ -8,12 +8,21 @@ export const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
   }
+  
   html, body {
     height: 100%;
   }
   
   html {
     font-size: 10px;
+  }
+  
+  header {
+    flex:  0 1 auto;
+  }
+  
+  main {
+    flex: 1 1 auto
   }
   
   body {

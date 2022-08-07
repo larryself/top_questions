@@ -1,7 +1,7 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Container = styled.div`
-  display: flex;
-  justify-content: space-between;
+	width: 100%;
+	text-align: center;
 `;
 export const Title = styled.h3``;
