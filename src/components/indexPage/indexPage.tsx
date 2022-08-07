@@ -1,76 +1,60 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Title, Container, List } from './style';
-import { Wrapper, DateControl, Question, Error } from 'components';
-import { useStore,useAction,useGetQuestionQuery } from 'store';
-import { useSearchParams } from 'react-router-dom';
+import React from "react";
+import { Title, Container, Inner } from "./style";
+import { Wrapper, DateControl, Error, Loader, QuestionList } from "components";
+import { useStore, useGetQuestionQuery } from "store";
+import { useSearchParams } from "react-router-dom";
+import isValidDate from "date-fns/isValid";
+import formatDate from "date-fns/format";
+import parseDate from "date-fns/parse";
+
+const dateFormat = "dd.MM.yyyy";
+
+const parseDateFromQueryString = (date: string | null): Date | null => {
+	if (!date) return null;
+	const parsed = parseDate(date, dateFormat, new Date());
+	return isValidDate(parsed) ? parsed : null;
+};
 
 export const IndexPage = () => {
-  const {initialDate, questions} = useStore();
-  const ref = useRef<HTMLUListElement>(null);
-  const [searchParams] = useSearchParams();
-  const dateInQuery = Number(searchParams.get('date'));
-  const date = dateInQuery || initialDate
-  const response = useGetQuestionQuery(date);
-  const {setQuestions} = useAction();
-  const [isChose, setIsChose] = useState<{ id: number, index: number}[]>([]);
-  const dbClick = ({id, index}: {id: number, index: number}) => {
-    const find = isChose.find((item) => item.id === id);
-    if (find) {
-      setIsChose([])
-    } else {
-      setIsChose((prev) => [...prev, {id, index}]);
-    }
-  };
-  const handleClick = (e: MouseEvent) => {
-    if (ref.current && !ref.current.contains(e.target as Node)) {
-      setIsChose([]);
-    }
-  }
-  const moveCard = useCallback((dragIndex: number, dropIndex: number) => {
-    setQuestions({dragIndex, dropIndex});
-  }, []);
+	const initialDate = new Date("01.01.2018");
+	const { questions } = useStore();
+	const [searchParams, setSearchParams] = useSearchParams();
+	const dateInQuery: string | null = searchParams.get("date");
+	const parsedDateInQuery = parseDateFromQueryString(dateInQuery);
+	const date = parsedDateInQuery ?? initialDate;
+	const response = useGetQuestionQuery(date.getTime());
 
-  useEffect(() => {
-    if (isChose.length === 1) {
-      document.addEventListener('dblclick',handleClick);
-    }
-    return () => {
-      document.removeEventListener('dblclick', handleClick);
-    };
-  }, [isChose]);
+	const handleDate = (value: Date) => {
+		setSearchParams({ date: formatDate(value, dateFormat) });
+	};
 
-  useEffect(()=> {
-    if (isChose.length === 2) {
-      setQuestions({dragIndex: isChose[0].index, dropIndex: isChose[1].index});
-      setIsChose([])
-    }
-  },[isChose])
-  return (
-    <>
-      <header>
-        <Wrapper>
-          <Container>
-            <Title>
-              5 самых популярных вопросов на <em>StackOverFlow</em>, содержащих <q>react-redux</q> в наименовании,
-              начиная с
-            </Title>
-            <DateControl date={date}/>
-          </Container>
-        </Wrapper>
-      </header>
-      <main>
-        <Wrapper>
-          {!response.error && (
-            <List ref={ref}>
-            {questions.map((question, index) => (
-              <li key={question.question_id}>
-                <Question {...question} index={index} moveCard={moveCard} dbClick={dbClick} isChose={isChose}/>
-              </li>
-            ))}
-          </List>)}
-          {response.error && <Error/>}
-        </Wrapper>
-      </main>
-    </>
-  );
+	return (
+		<>
+			<header>
+				<Wrapper>
+					<Container>
+						<Title>
+							5 самых популярных вопросов на <em>StackOverFlow</em>, содержащих{" "}
+							<q>react-redux</q> в наименовании, начиная с
+						</Title>
+						<DateControl
+							date={date}
+							setDate={handleDate}
+							minDate={initialDate}
+							dateFormat={dateFormat}
+						/>
+					</Container>
+				</Wrapper>
+			</header>
+			<main>
+				<Wrapper>
+					<Inner>
+						{!response.error && <QuestionList questions={questions} />}
+						{response.isFetching && <Loader />}
+						{response.error && <Error />}
+					</Inner>
+				</Wrapper>
+			</main>
+		</>
+	);
 };
