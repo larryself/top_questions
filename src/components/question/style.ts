@@ -13,19 +13,18 @@ export const Container = styled.div<{ isDragging: boolean }>`
 	}
 `;
 
-export const Box = styled.div<{ isAnswered: boolean; isActiveChoose: boolean }>`
+export const Box = styled.div<{ isAnswered: boolean; isSelected: boolean }>`
 	cursor: pointer;
 	display: flex;
 	justify-content: space-between;
 	background-color: ${(props) =>
-		props.isActiveChoose
+		props.isSelected
 			? COLORS.DARK_RED
 			: props.isAnswered
 			? COLORS.LIGHT_GREEN
 			: COLORS.MIDDLE_BLUE};
 	padding: 25px 15px 25px 30px;
-	color: ${(props) =>
-		props.isAnswered ? COLORS.DARK_BLUE : COLORS.LIGHT_BLUE};
+	color: ${COLORS.LIGHT_BLUE};
 `;
 
 export const Detail = styled.div<{ isOpen: boolean }>`
@@ -94,8 +93,9 @@ export const Inner = styled.div`
 	height: 100%;
 `;
 
-export const Link = styled.a`
-	color: ${COLORS.DARK_BLUE};
+export const Link = styled.a<{ isAnswered: Boolean }>`
+	color: ${(props) =>
+		props.isAnswered ? COLORS.DARK_BLUE : COLORS.LIGHT_BLUE};
 	&:hover {
 		opacity: 0.7;
 		text-decoration-line: underline;

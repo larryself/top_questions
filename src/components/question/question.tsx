@@ -106,7 +106,7 @@ export const Question = React.memo(
 					ref={ref}
 					isDragging={isDragging}
 				>
-					<Box isAnswered={is_answered} isActiveChoose={selected} ref={ref}>
+					<Box isAnswered={is_answered} isSelected={selected} ref={ref}>
 						{is_answered ? (
 							<IconInner>
 								<Approved />
@@ -114,6 +114,7 @@ export const Question = React.memo(
 						) : null}
 						<Title title={title} isOpen={opened}>
 							<Link
+								isAnswered={is_answered}
 								href={question.link}
 								target={"_blank"}
 								rel="noreferrer"

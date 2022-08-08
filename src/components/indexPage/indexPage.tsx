@@ -3,16 +3,19 @@ import { Title, Container, Inner } from "./style";
 import { Wrapper, DateControl, Error, Loader, QuestionList } from "components";
 import { useStore, useGetQuestionQuery } from "store";
 import { useSearchParams } from "react-router-dom";
-import isValidDate from "date-fns/isValid";
-import formatDate from "date-fns/format";
 import parseDate from "date-fns/parse";
+import { isValid, format } from "date-fns";
 
 const dateFormat = "dd.MM.yyyy";
 
 const parseDateFromQueryString = (date: string | null): Date | null => {
 	if (!date) return null;
+	if (!isValid(Date.parse(date))) return null;
 	const parsed = parseDate(date, dateFormat, new Date());
-	return isValidDate(parsed) ? parsed : null;
+	if (parsed.getFullYear() < 100) {
+		parsed.setFullYear(new Date(date).getFullYear());
+	}
+	return parsed;
 };
 
 export const IndexPage = () => {
@@ -25,7 +28,7 @@ export const IndexPage = () => {
 	const response = useGetQuestionQuery(date.getTime());
 
 	const handleDate = (value: Date) => {
-		setSearchParams({ date: formatDate(value, dateFormat) });
+		setSearchParams({ date: format(value, dateFormat) });
 	};
 
 	return (
