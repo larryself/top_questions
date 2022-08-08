@@ -27,6 +27,7 @@ export const DateControl = React.memo(
 			>
 				<Container>
 					<DatePicker
+						clearIcon={null}
 						format={dateFormat}
 						onChange={handlePicker}
 						value={currentDate}
